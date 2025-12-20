@@ -53,21 +53,50 @@ let preview = {
         document.getElementById("rankLink").href = rank;
         // update stats link
         document.getElementById("statsLink").href = stats;
+        
         // update image preview
-        document.querySelector(".output img").src = demoImageURL;
-        // update markdown
+        const previewContainer = document.getElementById("preview-container");
+        if(previewContainer) {
+             previewContainer.innerHTML = "Loading..."; // Optional loading text
+             
+             fetch(demoImageURL)
+                .then(response => {
+                    if (!response.ok) throw new Error("Network response was not ok");
+                    return response.text();
+                })
+                .then(svgText => {
+                    previewContainer.innerHTML = svgText;
+                })
+                .catch(error => {
+                    console.error("Error fetching SVG:", error);
+                    previewContainer.innerHTML = "Error loading preview.";
+                });
+        }
         document.querySelector(".md code").innerText = md;
         // disable copy button if username is invalid
         document.querySelectorAll(".copy-button").forEach(copyButton => {
             copyButton.disabled = !!document.querySelectorAll("#user:invalid").length;
         });
     },
-    addProperty: function (property, value = "#DD2727FF") {
+    addProperty: function (property, value) {
         const selectElement = document.querySelector("#properties");
         // if no property passed, get the currently selected property
         if (!property) {
             property = selectElement.value;
         }
+
+        // Handle specific logic for Border Radius vs Colors
+        let isColor = property !== "Border Radius";
+        let inputId = property;
+        let defaultValue = value;
+
+        if (property === "Border Radius") {
+            inputId = "borderRadius"; 
+            if (!defaultValue) defaultValue = "4";
+        } else {
+            if (!defaultValue) defaultValue = "#DD2727FF";
+        }
+
         if (!selectElement.disabled) {
             // disable option in menu
             Array.prototype.find.call(
@@ -84,18 +113,30 @@ let preview = {
             } else {
                 selectElement.disabled = true;
             }
+            
             // label
             const label = document.createElement("label");
             label.innerText = property;
             label.setAttribute("data-property", property);
-            // color picker
+            
+            // Input setup
             const input = document.createElement("input");
-            input.className = "param jscolor";
-            input.id = property;
-            input.name = property;
+            input.id = inputId;
+            input.name = inputId;
             input.setAttribute("data-property", property);
-            input.setAttribute("data-jscolor", "{ format: 'hexa' }");
-            input.value = value;
+            input.value = defaultValue;
+            
+            // Apply the 'param' class so the update() function finds it
+            input.className = "param";
+            input.type = "text"; 
+
+            if (isColor) {
+                input.className += " jscolor"; // Add jscolor class for color picker
+                input.setAttribute("data-jscolor", "{ format: 'hexa' }");
+            } else {
+                input.pattern = "[0-9]*"; 
+            }
+
             // removal button
             const minus = document.createElement("button");
             minus.className = "minus btn";
@@ -105,14 +146,17 @@ let preview = {
             );
             minus.innerText = "−";
             minus.setAttribute("data-property", property);
+            
             // add elements
             const parent = document.querySelector(".advanced .parameters");
             parent.appendChild(label);
             parent.appendChild(input);
             parent.appendChild(minus);
 
-            //initialise jscolor on element
-            jscolor.install(parent);
+            //initialise jscolor on element only if it is a color
+            if (isColor) {
+                jscolor.install(parent);
+            }
 
             // update and exit
             this.update();
@@ -199,6 +243,32 @@ document.addEventListener("click", () => preview.update(), false);
 window.addEventListener(
     "load",
     () => {
+        // We fetch the font list from Fontsource API
+        // to avoid Google Font API key
+        fetch('https://api.fontsource.org/v1/fonts')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('fontFamily');
+                if(!select) return;
+
+                data.forEach(font => {
+                    const option = document.createElement('option');
+                    option.value = font.family;
+                    option.text = font.family;
+                    select.appendChild(option);
+                });
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const fontParam = urlParams.get('fontFamily');
+                if (fontParam) {
+                    select.value = fontParam;
+                    preview.update(); 
+                }
+            })
+            .catch(err => {
+                console.error("Failed to fetch font list:", err);
+            });
+
         // set input boxes to match URL parameters
         new URLSearchParams(window.location.search).forEach((val, key) => {
             let paramInput = document.querySelector(`#${key}`);

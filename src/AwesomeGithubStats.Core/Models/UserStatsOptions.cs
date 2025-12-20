@@ -13,6 +13,8 @@
         public string Ring { get; set; }
         public string CardType { get; set; } = "default";
         public bool? PreferLogin { get; set; }
+        public int? BorderRadius { get; set; }
+        public string FontFamily { get; set; }
     }
 
 }

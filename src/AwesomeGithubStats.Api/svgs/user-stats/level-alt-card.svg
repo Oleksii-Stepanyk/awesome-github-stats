@@ -1,7 +1,10 @@
-﻿﻿<svg xmlns="http://www.w3.org/2000/svg" width="450" height="200" viewBox="0 0 450 200" fill="none">
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="450" height="200" viewBox="0 0 450 200" fill="none">
     <style>
+    
+    {{FontCSS}}
+
     .header {
-        font-family: 'Roboto Slab',serif;
+        font-family: {{FontFamily}};
         font-size: 30px;
         font-weight: 700;
         line-height: .75;
@@ -10,7 +13,7 @@
     }
 
     .stat {
-        font: 800 14px 'Roboto Slab',serif;
+        font: 800 14px {{FontFamily}};
         fill: #{{TextColor}};
     }
 
@@ -120,7 +123,7 @@
 
     </style>
 
-    <rect data-testid="card-bg" x="0.5" y="0.5" rx="4.5" height="99%" stroke="#{{BorderColor}}" width="99%" fill="#{{BackgroundColor}}" stroke-opacity="1" />
+    <rect data-testid="card-bg" x="0.5" y="0.5" rx="{{BorderRadius}}" height="99%" stroke="#{{BorderColor}}" width="99%" fill="#{{BackgroundColor}}" stroke-opacity="1" />
 
 
     <g data-testid="card-title" transform="translate(25, 35)">
