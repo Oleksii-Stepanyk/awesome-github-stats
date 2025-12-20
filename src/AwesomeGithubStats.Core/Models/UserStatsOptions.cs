@@ -15,6 +15,8 @@
         public bool? PreferLogin { get; set; }
         public int? BorderRadius { get; set; }
         public string FontFamily { get; set; }
+        
+        public RankPoints Points { get; set; } = RankPoints.Default;
     }
 
 }

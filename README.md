@@ -162,7 +162,7 @@ Actually another repositories with the same goal doesn't count stats with accura
 
 #### Requirements
 
-- [.NET 6](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET 10](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 ### Authorization
 
@@ -201,4 +201,4 @@ And another special thank to [Sindre Sorhus](https://github.com/sindresorhus) to
 
 ---
 
-Made .NET 6 ❤️
+Made .NET 10 ❤️

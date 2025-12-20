@@ -38,7 +38,7 @@ namespace AwesomeGithubStats.Api.Controllers
         public async Task<IActionResult> Get(string username, [FromQuery] UserStatsOptions options)
         {
             var userStats = await _githubService.GetUserStats(username);
-            var rank = _rankService.CalculateRank(userStats);
+            var rank = _rankService.CalculateRank(userStats, options.Points);
             var content = await _svgService.GetUserStatsImage(rank, options);
 
 
@@ -52,12 +52,13 @@ namespace AwesomeGithubStats.Api.Controllers
         public async Task<IActionResult> Preview(string username, [FromQuery] UserStatsOptions options)
         {
             var userStats = await _githubService.GetUserStats(username);
-            var rank = _rankService.CalculateRank(userStats);
+            var rank = _rankService.CalculateRank(userStats, options.Points);
             var content = await _svgService.GetUserStatsImage(rank, options);
 
 
             return File(content, "image/svg+xml; charset=utf-8");
         }
+
         [HttpGet("{username}/stats"), ResponseCache(Location = ResponseCacheLocation.Client, Duration = 600, VaryByQueryKeys = new[] { "username" })]
         public async Task<IActionResult> GetStats(string username)
         {
@@ -70,7 +71,7 @@ namespace AwesomeGithubStats.Api.Controllers
         public async Task<IActionResult> GetRank(string username)
         {
             var userStats = await _githubService.GetUserStats(username);
-            var rank = _rankService.CalculateRank(userStats);
+            var rank = _rankService.CalculateRank(userStats, RankPoints.Default);
             return Ok(rank);
         }
 
@@ -87,13 +88,13 @@ namespace AwesomeGithubStats.Api.Controllers
 
             var usercard = new UserStatsCard(new RankDegree()
             {
-                new(){Rank = "S++",Points = 300000},
-                new(){Rank = "S+",Points =  63000},
-                new(){Rank = "S",Points =  28000},
-                new(){Rank = "A++",Points =  21000},
-                new(){Rank = "A+",Points =  14000},
-                new(){Rank = "A",Points =  7000},
-                new(){Rank = "💪",Points = 0}
+                new() { Rank = "S++", Points = 300000 },
+                new() { Rank = "S+", Points = 63000 },
+                new() { Rank = "S", Points = 28000 },
+                new() { Rank = "A++", Points = 21000 },
+                new() { Rank = "A+", Points = 14000 },
+                new() { Rank = "A", Points = 7000 },
+                new() { Rank = "💪", Points = 0 }
             }, options);
             var rank = _rankService.CalculateRank(new()
             {
@@ -111,8 +112,7 @@ namespace AwesomeGithubStats.Api.Controllers
                 PullRequestsToAnotherRepositories = 20,
                 CommitsToAnotherRepositories = 51,
                 CommitsToMyRepositories = 365
-
-            });
+            }, options.Points);
             var style = new CardStyles();
             style.Apply(options);
             return File(usercard.Svg(coent, rank, style, new CardTranslations()), "image/svg+xml");

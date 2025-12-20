@@ -3,6 +3,19 @@ let preview = {
     defaults: {
         theme: "default",
         showIcons: "true",
+        "Points.Commits": "1",
+        "Points.ContributedToNotOwnerRepositories": "10",
+        "Points.ContributedToOwnRepositories": "1",
+        "Points.CreatedRepositories": "1",
+        "Points.DirectStars": "3.5",
+        "Points.Followers": "1",
+        "Points.IndirectStars": "1",
+        "Points.Issues": "1",
+        "Points.PullRequests": "1",
+        "Points.PullRequestsToAnotherRepositories": "5",
+        "Points.CommitsToMyRepositories": "1",
+        "Points.CommitsToAnotherRepositories": "10",
+        "Points.ContributedTo": "1",
     },
     // update the preview
     update: function () {
@@ -237,7 +250,18 @@ document.addEventListener('keyup', function (e) {
         preview.update();
     }, 1000);
 });
-document.addEventListener("click", () => preview.update(), false);
+document.addEventListener("input", (e) => {
+    if (e.target && e.target.classList.contains("param")) {
+        preview.update();
+    }
+}, true);
+
+document.addEventListener("change", (e) => {
+    if (e.target && e.target.classList.contains("param")) {
+        preview.update();
+    }
+}, true);
+
 
 // when the page loads
 window.addEventListener(

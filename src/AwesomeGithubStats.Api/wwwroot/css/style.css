@@ -149,6 +149,7 @@ h2 {
 }
 
 .parameters input[type="text"],
+.parameters input[type="number"],
 .parameters input.jscolor,
 .parameters select {
     padding: 10px 14px;
@@ -195,22 +196,62 @@ input:focus:invalid {
     outline: 2px var(--red) auto;
 }
 
-.advanced {
+/* Collapsible sections (Rank Weights and Advanced Options) */
+.advanced,
+.rankpoints {
     grid-column-start: 1;
     grid-column-end: -1;
+    margin-top: 8px;
 }
 
-.advanced summary {
+.advanced summary,
+.rankpoints summary {
     padding: 6px;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 6px;
+    transition: background 0.2s ease-in-out;
 }
 
+.advanced summary:hover,
+.rankpoints summary:hover {
+    background: var(--background);
+}
+
+/* Content inside collapsible sections */
+.advanced .content,
+.rankpoints .content {
+    padding-top: 8px;
+}
+
+/* Advanced Options has 3 columns: label, input, button */
 .advanced .parameters {
     margin-top: 8px;
     grid-template-columns: auto 1fr auto;
 }
 
+/* Rank Weights has 2 columns: label, input */
+.rankpoints .parameters {
+    margin-top: 8px;
+    grid-template-columns: auto 1fr;
+}
+
 .advanced .parameters label:first-of-type {
     font-weight: bold;
+}
+
+/* Info icon styling */
+label span[title] {
+    display: inline-block;
+    cursor: help;
+    opacity: 0.6;
+    font-size: 0.9em;
+    transition: opacity 0.2s ease-in-out;
+    user-select: none;
+}
+
+label span[title]:hover {
+    opacity: 1;
 }
 
 .plus.btn,
@@ -309,5 +350,5 @@ input:focus:invalid {
 
 pre {
     white-space: pre-wrap;
-    word-break: keep-all
+    word-break: break-all
 }

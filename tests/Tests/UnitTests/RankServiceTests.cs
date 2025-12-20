@@ -16,7 +16,6 @@ namespace Tests.UnitTests
         {
             _rankPoints = new Mock<IOptions<RankPoints>>();
             var rankDegree = new Mock<IOptions<RankDegree>>();
-            _rankPoints.Setup(s => s.Value).Returns(new RankPoints());
             rankDegree.Setup(s => s.Value).Returns(new RankDegree()
                 {
                     new(){Rank = "S++",Points = 300000},
@@ -29,7 +28,7 @@ namespace Tests.UnitTests
                 }
             );
 
-            _rankService = new RankService(_rankPoints.Object, rankDegree.Object);
+            _rankService = new RankService(rankDegree.Object);
         }
 
         [Fact]
@@ -50,7 +49,7 @@ namespace Tests.UnitTests
                 PullRequestsToAnotherRepositories = 0,
                 CommitsToAnotherRepositories = 5,
                 CommitsToMyRepositories = 182,
-            });
+            }, RankPoints.Default);
             rank.Level.Should().Be("💪");
             rank.Score.Should().Be(4780);
         }
@@ -58,7 +57,7 @@ namespace Tests.UnitTests
         [Fact]
         public void Should_Calculate_Rank_SPlusPlus()
         {
-            _rankPoints.Setup(s => s.Value).Returns(new RankPoints()
+            var points = new RankPoints()
             {
                 Commits = 1,
                 ContributedToNotOwnerRepositories = 10,
@@ -73,7 +72,7 @@ namespace Tests.UnitTests
                 CommitsToMyRepositories = 1,
                 CommitsToAnotherRepositories = 10,
                 ContributedTo = 1,
-            });
+            };
 
             var rank = _rankService.CalculateRank(new UserStats()
             {
@@ -92,7 +91,7 @@ namespace Tests.UnitTests
                 PullRequestsToAnotherRepositories = 849,
                 CommitsToAnotherRepositories = 22526,
                 CommitsToMyRepositories = 2827
-            });
+            }, points);
             rank.Level.Should().Be("S++");
             rank.Score.Should().BeGreaterThanOrEqualTo(69884);
         }
@@ -115,7 +114,7 @@ namespace Tests.UnitTests
                 PullRequestsToAnotherRepositories = 20,
                 CommitsToAnotherRepositories = 51,
                 CommitsToMyRepositories = 365
-            });
+            }, RankPoints.Default);
             rank.Level.Should().Be("S");
             rank.Score.Should().BeGreaterThanOrEqualTo(58937);
         }
@@ -140,7 +139,7 @@ namespace Tests.UnitTests
                 CommitsToAnotherRepositories = 1181,
                 CommitsToMyRepositories = 1081,
 
-            });
+            }, RankPoints.Default);
             rank.Level.Should().Be("S+");
             rank.Score.Should().BeGreaterThanOrEqualTo(58937);
         }
@@ -164,7 +163,7 @@ namespace Tests.UnitTests
                 Issues = 60,
                 PullRequests = 19,
                 PullRequestsToAnotherRepositories = 10,
-            });
+            }, RankPoints.Default);
             rank.Level.Should().Be("A++");
             rank.Score.Should().BeGreaterThanOrEqualTo(29997);
         }

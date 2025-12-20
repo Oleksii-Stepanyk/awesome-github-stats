@@ -4,6 +4,6 @@ namespace AwesomeGithubStats.Core.Interfaces
 {
     public interface IRankService
     {
-        UserRank CalculateRank(UserStats userStats);
+        UserRank CalculateRank(UserStats userStats, RankPoints points);
     }
 }

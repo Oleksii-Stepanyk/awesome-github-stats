@@ -162,5 +162,36 @@ namespace AwesomeGithubStats.Core.Models
         public string TotalPullRequests() => FormatNumber(PullRequests);
         public string TotalIssues() => FormatNumber(Issues);
         public string TotalContributedFor() => FormatNumber(ContributedTo);
+
+        public UserStats ApplyRankPoints(RankPoints rankPoints)
+        {
+            if (rankPoints == null)
+                throw new ArgumentNullException(nameof(rankPoints));
+
+            return new UserStats
+            {
+                // metadados
+                Login = Login,
+                Name = Name,
+                LastFetch = LastFetch,
+
+                // exatamente os mesmos campos do GetScore
+                PullRequests = rankPoints.PullRequests == 0 ? 0 : PullRequests,
+                Commits = rankPoints.Commits == 0 ? 0 : Commits,
+                PullRequestsToAnotherRepositories = rankPoints.PullRequestsToAnotherRepositories == 0 ? 0 : PullRequestsToAnotherRepositories,
+                Issues = rankPoints.Issues == 0 ? 0 : Issues,
+                CreatedRepositories = rankPoints.CreatedRepositories == 0 ? 0 : CreatedRepositories,
+                DirectStars = rankPoints.DirectStars == 0 ? 0 : DirectStars,
+                IndirectStars = rankPoints.IndirectStars == 0 ? 0 : IndirectStars,
+                ContributedTo = rankPoints.ContributedTo == 0 ? 0 : ContributedTo,
+                ContributedToOwnRepositories = rankPoints.ContributedToOwnRepositories == 0 ? 0 : ContributedToOwnRepositories,
+                ContributedToNotOwnerRepositories = rankPoints.ContributedToNotOwnerRepositories == 0 ? 0 : ContributedToNotOwnerRepositories,
+                Followers = rankPoints.Followers == 0 ? 0 : Followers,
+                CommitsToAnotherRepositories = rankPoints.CommitsToAnotherRepositories == 0 ? 0 : CommitsToAnotherRepositories,
+                CommitsToMyRepositories = rankPoints.CommitsToMyRepositories == 0 ? 0 : CommitsToMyRepositories
+            };
+        }
+
+
     }
 }

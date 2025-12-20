@@ -6,18 +6,17 @@ namespace AwesomeGithubStats.Core.Services
 {
     public class RankService : IRankService
     {
-        private readonly RankPoints _rankPoints;
         private readonly RankDegree _rankDegree;
 
-        public RankService(IOptions<RankPoints> points, IOptions<RankDegree> rankDegree)
+        public RankService(IOptions<RankDegree> rankDegree)
         {
-            _rankPoints = points.Value;
             _rankDegree = rankDegree.Value;
         }
 
-        public UserRank CalculateRank(UserStats userStats)
+        public UserRank CalculateRank(UserStats userStats, RankPoints rankPoints)
         {
-            return new(_rankPoints, userStats, _rankDegree);
+            var updatedStats = userStats.ApplyRankPoints(rankPoints);
+            return new(rankPoints, updatedStats, _rankDegree);
         }
     }
 }
