@@ -1,4 +1,5 @@
 using AwesomeGithubStats.Api.Configuration;
+using AwesomeGithubStats.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -73,6 +74,9 @@ try
     });
 
     services.ConfigureGithubServices(config);
+
+    services.AddHttpClient(nameof(SelfPingService));
+    services.AddHostedService<SelfPingService>();
 
     services.AddHealthChecks();
 
